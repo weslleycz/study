@@ -1,0 +1,36 @@
+version: '3.7'
+
+services:
+  mongodb:
+    image: prismagraphql/mongo-single-replica:4.4.3-bionic
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: prisma
+      INIT_WAIT_SEC: 3
+    ports:
+      - "27017:27017"
+
+  db: # Add this 'db' service
+    image: mariadb
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: example
+      MYSQL_DATABASE: nextcloud
+      MYSQL_USER: nextcloud
+      MYSQL_PASSWORD: example
+    volumes:
+      - db-data:/var/lib/mysql
+
+  nextcloud:
+    image: nextcloud
+    restart: always
+    ports:
+      - 8080:80
+    depends_on:
+      - db  # Make sure to depend on the 'db' service
+    volumes:
+      - nextcloud:/var/www/html
+
+volumes:
+  db-data: {}
+  nextcloud: {}
