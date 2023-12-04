@@ -1,7 +1,15 @@
-import styles from './page.module.css'
+"use client";
+import { Container } from "@mui/material";
+import dynamic from "next/dynamic";
+import { Lessons } from "./components/Lessons";
+
 
 export default function Home() {
   return (
-   <>Hello World!</>
-  )
+    <>
+      <Container maxWidth="lg">
+        <Lessons />
+      </Container>
+    </>
+  );
 }
