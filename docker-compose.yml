@@ -10,7 +10,7 @@ services:
     ports:
       - "27017:27017"
 
-  db: # Add this 'db' service
+  db:
     image: mariadb
     restart: always
     environment:
@@ -21,13 +21,19 @@ services:
     volumes:
       - db-data:/var/lib/mysql
 
+  redis:
+    image: redis
+    ports:
+      - "6379:6379"
+
   nextcloud:
     image: nextcloud
     restart: always
     ports:
       - 8080:80
     depends_on:
-      - db  # Make sure to depend on the 'db' service
+      - db
+      - redis  # Make sure to depend on the 'redis' service
     volumes:
       - nextcloud:/var/www/html
 

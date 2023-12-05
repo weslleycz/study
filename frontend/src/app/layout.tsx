@@ -1,7 +1,10 @@
 import type { Metadata } from "next";
 import { Container } from "./components/Container";
-import { Head } from "./components/Head";
+
+const Head = dynamic(() => import('./components/Head'), { ssr: false })
+
 import "./globals.scss";
+import dynamic from "next/dynamic";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -13,6 +16,7 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
+
   return (
     <html lang="pt-BR">
       <body>

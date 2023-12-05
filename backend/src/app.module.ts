@@ -8,6 +8,7 @@ import { APP_FILTER } from '@nestjs/core';
 import { HttpExceptionFilter } from './common/exceptions/http-exception.filter';
 import { JWTService } from './services/jwt.service';
 import { UserService } from './controllers/user/user.service';
+import { BcryptService } from './services/bcrypt.service';
 
 @Module({
   imports: [],
@@ -18,6 +19,7 @@ import { UserService } from './controllers/user/user.service';
     NextcloudService,
     JWTService,
     UserService,
+    BcryptService,
     {
       provide: APP_FILTER,
       useClass: HttpExceptionFilter,

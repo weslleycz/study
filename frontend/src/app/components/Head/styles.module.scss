@@ -1,6 +1,7 @@
 .container{
-    padding: 1.4%;
+    padding: 1%;
     border-bottom: 1px solid #F6F5F5;
     border-top: 5px solid #8956DF;
-    z-index: 1000;
+    display: flex;
+    justify-content: space-between;
 }
