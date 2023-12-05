@@ -1,7 +1,17 @@
-.container{
-    padding: 1%;
-    border-bottom: 1px solid #F6F5F5;
-    border-top: 5px solid #8956DF;
-    display: flex;
-    justify-content: space-between;
+.container {
+  padding: 1%;
+  border-bottom: 1px solid #f6f5f5;
+  border-top: 5px solid #8956df;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.container-avatar {
+  display: flex;
+  align-items: center;
+  text-align: center;
+  justify-content: center;
+  padding: 2%;
+  margin-right: 90%;
 }

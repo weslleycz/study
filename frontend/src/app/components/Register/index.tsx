@@ -19,9 +19,14 @@ import Link from "next/link";
 import { setCookie } from "cookies-next";
 import { useState } from "react";
 import { api } from "@/app/services/api";
+import { LoadingButton } from "@mui/lab";
 import { useRouter } from "next/navigation";
 
-export const Register = () => {
+type Props = {
+  setIsLogin: any;
+};
+
+export const Register = ({ setIsLogin }: Props) => {
   const [isVisibilityPassword, setIsVisibilityPassword] = useState(false);
   const [isVisibilityPasswordConfirm, setIsVisibilityPasswordConfirm] =
     useState(false);
@@ -31,21 +36,27 @@ export const Register = () => {
   const [passwordConfirm, setPasswordConfirm] = useState("");
   const [erro, setErro] = useState("");
   const router = useRouter();
+  const [isLoading, setIsLoading] = useState(false);
   const handlesubmit = async () => {
     setErro("");
+    setIsLoading(true);
     if (!name) {
+      setIsLoading(false);
       setErro("Você precisa preencher o seu nome.");
       return;
     }
     if (!email) {
+      setIsLoading(false);
       setErro("Você precisa preencher o seu E-mail.");
       return;
     }
     if (!password) {
+      setIsLoading(false);
       setErro("Você precisa preencher a senha.");
       return;
     }
     if (password != passwordConfirm) {
+      setIsLoading(false);
       setErro("As senhas não correspondem");
       return;
     }
@@ -63,21 +74,24 @@ export const Register = () => {
         sameSite: "lax",
       });
       router.push("/");
+      setIsLoading(false);
     } catch (error: any) {
       if (typeof error.response.data.message !== "string") {
         setErro(error.response.data.message.message[0]);
+        setIsLoading(false);
       } else {
         setErro(error.response.data.message);
+        setIsLoading(false);
       }
     }
   };
 
   return (
     <>
-      <Grid marginTop={0.1} container spacing={2}>
+      <Grid container spacing={2}>
         <Grid
           sx={{
-            height: "100vh",
+            height: "102.5vh",
             color: "white",
             p: 2,
           }}
@@ -116,6 +130,7 @@ export const Register = () => {
                   variant="outlined"
                   size="large"
                   sx={{ marginTop: 2 }}
+                  onClick={() => setIsLogin(true)}
                 >
                   Entrar
                 </Button>
@@ -124,7 +139,7 @@ export const Register = () => {
           </Box>
         </Grid>
         <Grid className={styles["continer-right"]} item xs={7}>
-          <Box className={styles.cont} height={"100%"}>
+          <Box className={styles.cont} height={"100vh"}>
             <Container maxWidth="sm">
               <Box>
                 <Typography
@@ -205,16 +220,16 @@ export const Register = () => {
                     }}
                   />
                   {erro === "" ? null : <Alert severity="error">{erro}</Alert>}
-
-                  <Button
+                  <LoadingButton
                     variant="contained"
                     color="primary"
                     size="large"
+                    loading={isLoading}
                     fullWidth
                     onClick={() => handlesubmit()}
                   >
                     cadastre-se
-                  </Button>
+                  </LoadingButton>
                 </Stack>
               </Box>
             </Container>

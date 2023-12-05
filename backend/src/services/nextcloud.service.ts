@@ -28,4 +28,8 @@ export class NextcloudService {
     const folder: Folder = await this.client.createFolder(folderName);
     return await (await folder.getFile(fileBaseName)).getContent();
   }
+
+  async createFolder(folderName: string) {
+    await this.client.createFolder(folderName);
+  }
 }

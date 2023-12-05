@@ -8,23 +8,100 @@ import {
   TextField,
   Typography,
   IconButton,
+  Alert,
 } from "@mui/material";
 import styles from "./styles.module.scss";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import Link from "next/link";
 import { setCookie } from "cookies-next";
+import { useState } from "react";
 
-export const Login = () => {
+type Props = {
+  setIsLogin: any;
+};
+
+export const Login = ({ setIsLogin }: Props) => {
+  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState("");
+  const [erro, setErro] = useState("");
+  const [isVisibilityPassword, setIsVisibilityPassword] = useState(false);
   const handlesubmit = async () => {
-    setCookie('token', 'value',);
+    if (!email) {
+      setErro("Você precisa preencher o seu E-mail.");
+      return;
+    }
+    if (!password) {
+      setErro("Você precisa preencher a senha.");
+      return;
+    }
   };
   return (
     <>
-      <Grid marginTop={0.1} container spacing={2}>
+      <Grid container spacing={2}>
+        <Grid className={styles["continer-right"]} item xs={7}>
+          <Box className={styles.cont} height={"100vh"}>
+            <Container maxWidth="sm">
+              <Box>
+                <Typography
+                  color={"#8956df"}
+                  sx={{ fontWeight: 900 }}
+                  variant="h4"
+                  gutterBottom
+                >
+                  Login
+                </Typography>
+                <Stack spacing={2}>
+                  <TextField
+                    sx={{ background: "#F4F8F7" }}
+                    label="E-mail"
+                    variant="filled"
+                    required
+                    onChange={(event) => setEmail(event.target.value)}
+                    value={email}
+                  />
+                  <TextField
+                    sx={{ background: "#F4F8F7", width: "100%" }}
+                    type={isVisibilityPassword ? "text" : "password"}
+                    label="Senha"
+                    variant="filled"
+                    required
+                    onChange={(event) => setPassword(event.target.value)}
+                    value={password}
+                    InputProps={{
+                      endAdornment: (
+                        <IconButton
+                          onClick={() =>
+                            setIsVisibilityPassword(!isVisibilityPassword)
+                          }
+                          color="primary"
+                        >
+                          {isVisibilityPassword ? (
+                            <VisibilityIcon color="primary" />
+                          ) : (
+                            <VisibilityOffIcon color="primary" />
+                          )}
+                        </IconButton>
+                      ),
+                    }}
+                  />
+                  {erro === "" ? null : <Alert severity="error">{erro}</Alert>}
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    size="large"
+                    fullWidth
+                    onClick={() => handlesubmit()}
+                  >
+                    Entrar
+                  </Button>
+                </Stack>
+              </Box>
+            </Container>
+          </Box>
+        </Grid>
         <Grid
           sx={{
-            height: "100vh",
             color: "white",
             p: 2,
           }}
@@ -51,11 +128,11 @@ export const Login = () => {
             >
               <Box>
                 <Typography variant="h4" sx={{ fontWeight: 800 }} gutterBottom>
-                  Bem-vindo de volta!
+                  Não tem uma conta?
                 </Typography>
                 <Typography variant="subtitle1" gutterBottom>
-                  Para manter-se conectado conosco, por favor, faça o login em
-                  sua conta.
+                  Para realizar sua inscrição nos cursos desejados, é necessário
+                  criar uma conta.
                 </Typography>
                 <Button
                   fullWidth
@@ -63,79 +140,12 @@ export const Login = () => {
                   variant="outlined"
                   size="large"
                   sx={{ marginTop: 2 }}
+                  onClick={() => setIsLogin(false)}
                 >
-                  Entrar
+                  Cadastre-se
                 </Button>
               </Box>
             </Box>
-          </Box>
-        </Grid>
-        <Grid className={styles["continer-right"]} item xs={7}>
-          <Box className={styles.cont} height={"100%"}>
-            <Container maxWidth="sm">
-              <Box>
-                <Typography
-                  color={"#8956df"}
-                  sx={{ fontWeight: 900 }}
-                  variant="h4"
-                  gutterBottom
-                >
-                  Criar uma conta
-                </Typography>
-                <Stack spacing={2}>
-                  <TextField
-                    sx={{ background: "#F4F8F7", width: "100%" }}
-                    label="Nome"
-                    variant="filled"
-                    required
-                  />
-                  <TextField
-                    sx={{ background: "#F4F8F7" }}
-                    label="E-mail"
-                    variant="filled"
-                    type="email"
-                    required
-                  />
-                  <TextField
-                    sx={{ background: "#F4F8F7", width: "100%" }}
-                    type="password"
-                    label="Senha"
-                    variant="filled"
-                    required
-                    InputProps={{
-                      endAdornment: (
-                        <IconButton color="primary">
-                          <VisibilityOffIcon color="primary" />
-                        </IconButton>
-                      ),
-                    }}
-                  />
-                  <TextField
-                    sx={{ background: "#F4F8F7", width: "100%" }}
-                    type="password"
-                    label="Confirmar senha"
-                    variant="filled"
-                    required
-                    InputProps={{
-                      endAdornment: (
-                        <IconButton color="primary">
-                          <VisibilityOffIcon color="primary" />
-                        </IconButton>
-                      ),
-                    }}
-                  />
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    size="large"
-                    fullWidth
-                    onClick={()=>handlesubmit()}
-                  >
-                    Entrar
-                  </Button>
-                </Stack>
-              </Box>
-            </Container>
           </Box>
         </Grid>
       </Grid>

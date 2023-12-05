@@ -9,6 +9,7 @@ import { HttpExceptionFilter } from './common/exceptions/http-exception.filter';
 import { JWTService } from './services/jwt.service';
 import { UserService } from './controllers/user/user.service';
 import { BcryptService } from './services/bcrypt.service';
+import { RedisService } from './services/redis.service';
 
 @Module({
   imports: [],
@@ -19,6 +20,7 @@ import { BcryptService } from './services/bcrypt.service';
     NextcloudService,
     JWTService,
     UserService,
+    RedisService,
     BcryptService,
     {
       provide: APP_FILTER,
