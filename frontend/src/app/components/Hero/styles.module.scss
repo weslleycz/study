@@ -1,0 +1,22 @@
+@import "../../theme";
+
+.container {
+background: $primary;
+  margin-top: 5%;
+  padding: 2%;
+  color: #ffffff;
+  // border-radius: 10px;
+  overflow: visible;
+}
+
+.heroImage {
+  width: 100%;
+  height: auto; 
+  margin-top: -22%;
+}
+
+.tile {
+  font-weight: 900;
+  margin-bottom: 5%;
+  margin-top: 5%;
+}

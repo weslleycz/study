@@ -1,0 +1,22 @@
+@import "../../theme";
+
+.container {
+  margin-top: 2%;
+  padding: 2%;
+  width: 50%;
+  text-align: center;
+  justify-content: center;
+  background: linear-gradient(180deg, $primary 52.52%, rgba(255, 0, 0, 0) 53.44%);
+}
+
+.input-file {
+  display: none; /* Oculta o input original */
+}
+
+.file-label {
+  border: none;
+  border-radius: 60%;
+  cursor: pointer;
+  background: $info;
+  padding: 1%;
+}

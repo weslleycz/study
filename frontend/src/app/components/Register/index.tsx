@@ -21,6 +21,7 @@ import { useState } from "react";
 import { api } from "@/app/services/api";
 import { LoadingButton } from "@mui/lab";
 import { useRouter } from "next/navigation";
+import { theme } from "../../theme";
 
 type Props = {
   setIsLogin: any;
@@ -143,7 +144,7 @@ export const Register = ({ setIsLogin }: Props) => {
             <Container maxWidth="sm">
               <Box>
                 <Typography
-                  color={"#8956df"}
+                  color={theme.palette.primary.main}
                   sx={{ fontWeight: 900 }}
                   variant="h4"
                   gutterBottom

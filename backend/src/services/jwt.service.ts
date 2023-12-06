@@ -28,7 +28,6 @@ export class JWTService {
   }
 
   public decode(token: string) {
-    const tokenJwt = token.substring(7);
-    return decode(tokenJwt);
+    return decode(token);
   }
 }

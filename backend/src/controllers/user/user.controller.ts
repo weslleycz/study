@@ -1,8 +1,18 @@
-import { Body, Controller, Post, UseFilters, Query } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Post,
+  UseFilters,
+  Query,
+  Get,
+  Res,
+  Param,
+} from '@nestjs/common';
 import { HttpExceptionFilter } from 'src/common/exceptions/http-exception.filter';
-import { CreateUserDTO } from './user.dto';
+import { CreateUserDTO, LoginUserDTO } from './user.dto';
 import { UserService } from './user.service';
 import { Roles } from '@prisma/client';
+import { Response } from 'express';
 
 @Controller('users')
 @UseFilters(HttpExceptionFilter)
@@ -10,6 +20,36 @@ export class UserController {
   constructor(private readonly userService: UserService) {}
   @Post()
   async createUser(@Body() data: CreateUserDTO, @Query('role') role: Roles) {
-    return this.userService.create(data, role);
+    return await this.userService.create(data, role);
+  }
+
+  @Post('/login')
+  async login(@Body() data: LoginUserDTO) {
+    return await this.userService.login(data);
+  }
+
+  @Get(':id')
+  async findFirst(@Param('id') id: string) {
+    return await this.userService.findFirst(id);
+  }
+
+  @Get('/avatar/:id')
+  async getAvatar(@Param('id') id: string, @Res() res: Response) {
+    const avatar = await this.userService.getAvatar(id);
+    res.setHeader(
+      'Content-Disposition',
+      `attachment; filename=${id}-avatar.jpg`,
+    );
+    res.setHeader('Content-Type', 'image/jpeg');
+    res.send(avatar);
+  }
+
+  @Post('/upload/:id')
+  async upload(@Body() data: any, @Param('id') id: string) {
+    if (typeof data?.data !== 'string') {
+      throw new Error('Os dados devem ser uma string base64 válida');
+    }
+    const file = Buffer.from(data?.data, 'base64');
+    return await this.userService.upload(file, id);
   }
 }

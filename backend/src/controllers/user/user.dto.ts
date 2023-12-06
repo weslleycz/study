@@ -20,3 +20,11 @@ export class CreateUserDTO {
   @Validate(IsPasswordStrongConstraint)
   password: string;
 }
+
+export class LoginUserDTO {
+  @IsNotEmpty({ message: 'O e-mail não pode estar vazio' })
+  email: string;
+
+  @IsNotEmpty({ message: 'A senha não pode estar vazia' })
+  password: string;
+}

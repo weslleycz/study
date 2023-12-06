@@ -16,6 +16,10 @@ import VisibilityIcon from "@mui/icons-material/Visibility";
 import Link from "next/link";
 import { setCookie } from "cookies-next";
 import { useState } from "react";
+import { api } from "@/app/services/api";
+import { useRouter } from "next/navigation";
+import { LoadingButton } from "@mui/lab";
+import { theme } from "../../theme";
 
 type Props = {
   setIsLogin: any;
@@ -26,14 +30,42 @@ export const Login = ({ setIsLogin }: Props) => {
   const [email, setEmail] = useState("");
   const [erro, setErro] = useState("");
   const [isVisibilityPassword, setIsVisibilityPassword] = useState(false);
+  const router = useRouter();
+  const [isLoading, setIsLoading] = useState(false);
   const handlesubmit = async () => {
+    setIsLoading(true);
     if (!email) {
+      setIsLoading(false);
       setErro("Você precisa preencher o seu E-mail.");
       return;
     }
     if (!password) {
+      setIsLoading(false);
       setErro("Você precisa preencher a senha.");
       return;
+    }
+    try {
+      const res = await api.post("/users/login",{
+        email,
+        password,
+      })
+      const expirationDate = new Date();
+      expirationDate.setTime(expirationDate.getTime() + 72 * 60 * 60 * 1000);
+      setCookie("token", res.data, {
+        expires: expirationDate,
+        secure: true,
+        sameSite: "lax",
+      });
+      router.push("/");
+      setIsLoading(false);
+    } catch (error:any) {
+      if (typeof error.response.data.message !== "string") {
+        setErro(error.response.data.message.message[0]);
+        setIsLoading(false);
+      } else {
+        setErro(error.response.data.message);
+        setIsLoading(false);
+      }
     }
   };
   return (
@@ -44,7 +76,7 @@ export const Login = ({ setIsLogin }: Props) => {
             <Container maxWidth="sm">
               <Box>
                 <Typography
-                  color={"#8956df"}
+                  color={theme.palette.primary.main}
                   sx={{ fontWeight: 900 }}
                   variant="h4"
                   gutterBottom
@@ -86,15 +118,16 @@ export const Login = ({ setIsLogin }: Props) => {
                     }}
                   />
                   {erro === "" ? null : <Alert severity="error">{erro}</Alert>}
-                  <Button
+                  <LoadingButton
                     variant="contained"
                     color="primary"
                     size="large"
                     fullWidth
+                    loading={isLoading}
                     onClick={() => handlesubmit()}
                   >
                     Entrar
-                  </Button>
+                  </LoadingButton>
                 </Stack>
               </Box>
             </Container>
