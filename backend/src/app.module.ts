@@ -10,10 +10,12 @@ import { JWTService } from './services/jwt.service';
 import { UserService } from './controllers/user/user.service';
 import { BcryptService } from './services/bcrypt.service';
 import { RedisService } from './services/redis.service';
+import { NotificationsController } from './controllers/notifications/notifications.controller';
+import { NotificationsService } from './controllers/notifications/notifications.service';
 
 @Module({
   imports: [],
-  controllers: [AppController, UserController],
+  controllers: [AppController, UserController, NotificationsController],
   providers: [
     AppService,
     PrismaService,
@@ -22,6 +24,7 @@ import { RedisService } from './services/redis.service';
     UserService,
     RedisService,
     BcryptService,
+    NotificationsService,
     {
       provide: APP_FILTER,
       useClass: HttpExceptionFilter,

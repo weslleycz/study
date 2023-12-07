@@ -21,7 +21,8 @@ export class UserService {
         data: { email, name, password: cryptPassword, role },
       });
       await this.nextcloudService.createFolder(user.id);
-      return this.jWTService.login(user.id, user.role);
+      const token = this.jWTService.login(user.id, user.role);
+      return { token, id: user.id };
     } catch (error) {
       throw new HttpException('Email já registrado', 409);
     }
@@ -42,7 +43,8 @@ export class UserService {
       if (!isPasswordValid) {
         throw new HttpException('Usuário ou senha inválidos', 401);
       }
-      return this.jWTService.login(user.id, user.role);
+      const token = this.jWTService.login(user.id, user.role);
+      return { token, id: user.id };
     } catch (error) {
       throw new HttpException('Usuário ou senha inválidos', 401);
     }

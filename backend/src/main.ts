@@ -16,6 +16,8 @@ async function bootstrap() {
     origin: '*',
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     allowedHeaders: 'Content-Type,Authorization,token',
+    credentials: true,
+    optionsSuccessStatus: 204,
   };
   app.useGlobalPipes(new ValidationPipe());
   app.enableCors(corsOptions);

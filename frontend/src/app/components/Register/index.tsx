@@ -69,7 +69,12 @@ export const Register = ({ setIsLogin }: Props) => {
       });
       const expirationDate = new Date();
       expirationDate.setTime(expirationDate.getTime() + 72 * 60 * 60 * 1000);
-      setCookie("token", res.data, {
+      setCookie("token", res.data.token, {
+        expires: expirationDate,
+        secure: true,
+        sameSite: "lax",
+      });
+      setCookie("id", res.data.id, {
         expires: expirationDate,
         secure: true,
         sameSite: "lax",

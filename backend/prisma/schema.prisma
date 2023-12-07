@@ -11,14 +11,16 @@ datasource db {
 }
 
 model User {
-  id         String       @id @default(auto()) @map("_id") @db.ObjectId
-  email      String       @unique
-  name       String
-  password   String
-  role       Roles        @default(Student)
-  courses    Course[]
-  comments   Comment[]
-  Enrollment Enrollment[]
+  id            String         @id @default(auto()) @map("_id") @db.ObjectId
+  email         String         @unique
+  name          String
+  password      String
+  role          Roles          @default(Student)
+  courses       Course[]
+  comments      Comment[]
+  Enrollment    Enrollment[]
+  notifications Notification[]
+  status        Status         @default(Online)
 
   @@map("Users")
 }
@@ -97,7 +99,20 @@ model Progress {
   completed    Boolean
 }
 
+model Notification {
+  id     String  @id @default(auto()) @map("_id") @db.ObjectId
+  title  String
+  text   String
+  User   User?   @relation(fields: [userId], references: [id])
+  userId String? @db.ObjectId
+}
+
 enum Roles {
   Teacher
   Student
+}
+
+enum Status {
+  Online
+  Offline
 }

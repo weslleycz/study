@@ -1,8 +1,6 @@
 "use client";
 
 import { api } from "@/app/services/api";
-import InsertCommentIcon from "@mui/icons-material/InsertComment";
-import NotificationsIcon from "@mui/icons-material/Notifications";
 import SchoolIcon from "@mui/icons-material/School";
 import { Badge, Box, Button, Stack } from "@mui/material";
 import { getCookie } from "cookies-next";
@@ -70,21 +68,7 @@ const Head = () => {
             </Link>
           ) : (
             <Box className={styles["container-avatar"]}>
-              <Stack direction="row" spacing={3}>
-                <Badge badgeContent={0} color="info">
-                  <InsertCommentIcon color="primary" />
-                </Badge>
-                <Badge badgeContent={0} color="info">
-                  <NotificationsIcon color="primary" />
-                </Badge>
-                <Box
-                  display={"flex"}
-                  justifyContent={"center"}
-                  alignItems={"center"}
-                >
-                  <AvatarMenu name={name} id={id} />
-                </Box>
-              </Stack>
+                <AvatarMenu name={name} />
             </Box>
           )}
         </Box>
