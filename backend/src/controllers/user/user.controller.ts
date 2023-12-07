@@ -13,11 +13,15 @@ import { CreateUserDTO, LoginUserDTO } from './user.dto';
 import { UserService } from './user.service';
 import { Roles } from '@prisma/client';
 import { Response } from 'express';
+import { JWTService } from 'src/services/jwt.service';
 
 @Controller('users')
 @UseFilters(HttpExceptionFilter)
 export class UserController {
-  constructor(private readonly userService: UserService) {}
+  constructor(
+    private readonly userService: UserService,
+    private readonly jWTService: JWTService,
+  ) {}
   @Post()
   async createUser(@Body() data: CreateUserDTO, @Query('role') role: Roles) {
     return await this.userService.create(data, role);
@@ -30,6 +34,12 @@ export class UserController {
 
   @Get(':id')
   async findFirst(@Param('id') id: string) {
+    const token = await this.jWTService.decode(id);
+    return await this.userService.findFirst(token.data);
+  }
+
+  @Get('/byId/:id')
+  async findFirstById(@Param('id') id: string) {
     return await this.userService.findFirst(id);
   }
 

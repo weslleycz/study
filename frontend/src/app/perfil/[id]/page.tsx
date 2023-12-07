@@ -3,22 +3,36 @@
 import { api } from "@/app/services/api";
 import { theme } from "@/app/theme";
 import EditIcon from "@mui/icons-material/Edit";
-import {
-  Avatar,
-  Box,
-  Chip,
-  Container,
-  Paper,
-  Tab,
-  Tabs,
-  Typography,
-} from "@mui/material";
+import { Avatar, Box, Chip, Container, Paper, Typography } from "@mui/material";
+import { getCookie } from "cookies-next";
+import dynamic from "next/dynamic";
 import { useParams, useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 import styles from "./styles.module.scss";
+const MensagemBtn = dynamic(() => import("../../components/MensagemBtn"), {
+  ssr: false,
+});
 
 const Perfil = () => {
   const params = useParams();
   const router = useRouter();
+  const [name, setName] = useState("");
+  const [role, setRole] = useState("Student");
+  const [userId, setUserId] = useState("");
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const res = await api.get(`/users/byId/${params?.id}`);
+        setRole(res.data.role);
+        setName(res.data.name);
+        setUserId(res.data.id);
+      } catch (error) {
+        console.log(error);
+      }
+    })();
+  }, []);
+
   const handleFileChange = async (event: any) => {
     const selectedFile = event.target.files[0];
 
@@ -59,38 +73,47 @@ const Perfil = () => {
               src={process.env.API_Url + `/users/avatar/${params?.id}`}
             />
           </Box>
-          <Box justifyContent={"center"} marginTop={-2} display={"flex"}>
-            <Box
-              sx={{
-                width: "25%",
-                display: "flex",
-                justifyContent: "end",
-              }}
-            >
-              <label htmlFor="fileInput" className={styles["file-label"]}>
-                <EditIcon sx={{ color: "white" }} />
-              </label>
-              <input
-                type="file"
-                id="fileInput"
-                className={styles["input-file"]}
-                onChange={handleFileChange}
-              />
+          {userId === (getCookie("id") as string) ? (
+            <Box justifyContent={"center"} marginTop={-2} display={"flex"}>
+              <Box
+                sx={{
+                  width: "25%",
+                  display: "flex",
+                  justifyContent: "end",
+                }}
+              >
+                <label htmlFor="fileInput" className={styles["file-label"]}>
+                  <EditIcon sx={{ color: "white" }} />
+                </label>
+                <input
+                  type="file"
+                  id="fileInput"
+                  className={styles["input-file"]}
+                  onChange={handleFileChange}
+                />
+              </Box>
             </Box>
-          </Box>
+          ) : (
+            <></>
+          )}
+
           <Box display={"flex"} justifyContent={"center"}>
             <Box alignItems={"center"} display={"flex"}>
-              <Typography sx={{ marginTop: 2 }} variant="h4" gutterBottom>
-                Weslley
+              <Typography sx={{ marginTop: 2 }} variant="h5" gutterBottom>
+                {name}
               </Typography>
-              <Chip color="primary" label="Aluno" />
+              {role === "Student" ? (
+                <Chip color="primary" label="Aluno" />
+              ) : (
+                <Chip color="primary" label="Professor" />
+              )}
             </Box>
           </Box>
           <Box display={"flex"} justifyContent={"center"}>
-            <Tabs aria-label="basic tabs example">
-              <Tab label="Minhas disciplinas" />
-              <Tab label="Mensagens" />
-            </Tabs>
+            <MensagemBtn
+              id={getCookie("id") as string}
+              userID={params?.id as string}
+            />
           </Box>
         </Paper>
       </Container>

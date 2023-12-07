@@ -19,7 +19,7 @@ export class NotificationsService {
       } else {
         const notifications = await this.prismaService.notification.findMany({
           where: {
-            id,
+            userId: id,
           },
         });
         await this.redisService.setValue(
@@ -31,5 +31,23 @@ export class NotificationsService {
     } catch (error) {
       console.log(error);
     }
+  }
+
+  async delete(id: string) {
+    const notification = await this.prismaService.notification.delete({
+      where: {
+        id,
+      },
+    });
+    const notifications = await this.prismaService.notification.findMany({
+      where: {
+        userId: notification.userId,
+      },
+    });
+    await this.redisService.setValue(
+      `notifications${id}`,
+      JSON.stringify(notifications),
+    );
+    return notifications;
   }
 }

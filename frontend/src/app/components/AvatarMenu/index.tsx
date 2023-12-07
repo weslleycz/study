@@ -1,14 +1,13 @@
+import Brightness1Icon from "@mui/icons-material/Brightness1";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import { Avatar, Menu, MenuItem, Box, Badge, Stack } from "@mui/material";
+import InsertCommentIcon from "@mui/icons-material/InsertComment";
+import { Avatar, Badge, Box, Menu, MenuItem, Stack } from "@mui/material";
 import { deleteCookie, getCookie } from "cookies-next";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import InsertCommentIcon from "@mui/icons-material/InsertComment";
-import NotificationsIcon from "@mui/icons-material/Notifications";
-import Brightness1Icon from "@mui/icons-material/Brightness1";
 
 import { theme } from "../../theme";
-import { AccountCircle } from "@mui/icons-material";
+import { Notifications } from "../Notifications";
 
 type Props = {
   name: string;
@@ -21,9 +20,7 @@ export const AvatarMenu = ({ name }: Props) => {
     );
 
     eventSource.onmessage = (event) => {
-      // Manipular os dados recebidos do servidor
       const data = JSON.parse(event.data);
-      console.log(data);
       setNotifications(data);
     };
 
@@ -66,9 +63,10 @@ export const AvatarMenu = ({ name }: Props) => {
           <Badge badgeContent={0} color="info">
             <InsertCommentIcon color="primary" />
           </Badge>
-          <Badge badgeContent={notifications.length} color="info">
-            <NotificationsIcon color="primary" />
-          </Badge>
+          <Notifications
+            setNotifications={setNotifications}
+            notifications={notifications}
+          />
         </Box>
         <Box display={"flex"} justifyContent={"center"} alignItems={"center"}>
           <Box display="flex" alignItems="center">
@@ -80,7 +78,7 @@ export const AvatarMenu = ({ name }: Props) => {
               alt="User Avatar"
               src={process.env.API_Url + `/users/avatar/${getCookie("id")}`}
             />
-            <Brightness1Icon sx={{ color: "#2CCA37", fontSize:13 }} />
+            <Brightness1Icon sx={{ color: "#2CCA37", fontSize: 13 }} />
           </Box>
 
           <ExpandMoreIcon

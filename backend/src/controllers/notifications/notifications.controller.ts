@@ -1,4 +1,4 @@
-import { Controller, Get, Req, Res } from '@nestjs/common';
+import { Controller, Delete, Get, Param, Req, Res } from '@nestjs/common';
 import { Request, Response } from 'express';
 import { PrismaService } from 'src/services/prisma.service';
 import { NotificationsService } from './notifications.service';
@@ -47,5 +47,11 @@ export class NotificationsController {
       clearInterval(interval);
       res.end();
     });
+  }
+
+  @Delete(':id')
+  async delete(@Param('id') id: string) {
+    console.log(id);
+    return await this.notificationsService.delete(id);
   }
 }

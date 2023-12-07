@@ -53,7 +53,9 @@ const Head = () => {
                   <Link href={"/"}>
                     <Button variant="text">Home</Button>
                   </Link>
-                  <Button variant="text">Disciplinas</Button>
+                  <Link href={"/courses"}>
+                    <Button variant="text">Cursos</Button>
+                  </Link>
                 </Box>
               </>
             )}
@@ -68,7 +70,7 @@ const Head = () => {
             </Link>
           ) : (
             <Box className={styles["container-avatar"]}>
-                <AvatarMenu name={name} />
+              <AvatarMenu name={name} />
             </Box>
           )}
         </Box>
