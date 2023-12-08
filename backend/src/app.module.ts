@@ -14,6 +14,7 @@ import { NotificationsController } from './controllers/notifications/notificatio
 import { NotificationsService } from './controllers/notifications/notifications.service';
 import { ChatController } from './controllers/chat/chat.controller';
 import { ChatService } from './controllers/chat/chat.service';
+import { ChatGateway } from './gateways/chat.gateway';
 
 @Module({
   imports: [],
@@ -33,6 +34,7 @@ import { ChatService } from './controllers/chat/chat.service';
     BcryptService,
     ChatService,
     NotificationsService,
+    ChatGateway,
     {
       provide: APP_FILTER,
       useClass: HttpExceptionFilter,

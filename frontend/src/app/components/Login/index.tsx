@@ -34,6 +34,7 @@ export const Login = ({ setIsLogin }: Props) => {
   const [isLoading, setIsLoading] = useState(false);
   const handlesubmit = async () => {
     setIsLoading(true);
+    console.log(email);
     if (!email) {
       setIsLoading(false);
       setErro("Você precisa preencher o seu E-mail.");

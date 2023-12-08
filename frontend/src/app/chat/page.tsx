@@ -1,17 +1,20 @@
 "use client";
 
-import { theme } from "@/app/theme";
 import SendIcon from "@mui/icons-material/Send";
 import { Box, Grid, IconButton, Paper, Stack, TextField } from "@mui/material";
-import { useEffect, useState } from "react";
-import { MessageBox } from "react-chat-elements";
-import "react-chat-elements/dist/main.css";
-import { api } from "../services/api";
 import { getCookie } from "cookies-next";
+import { useEffect, useRef, useState } from "react";
+import "react-chat-elements/dist/main.css";
 import { ChatItem } from "../components/ChatItem";
+import { Messages } from "../components/Messages";
+import { socket } from "../services/socket";
 
 const Chat = () => {
   const [chats, setChats] = useState([]);
+  const [messages, setMessages] = useState<any[]>([]);
+  const [message, setMessage] = useState("");
+  const [seletChat, setSeletChat] = useState("");
+
   useEffect(() => {
     const eventSource = new EventSource(
       `${process.env.API_Url}/chat/${getCookie("id") as string}`
@@ -19,7 +22,7 @@ const Chat = () => {
 
     eventSource.onmessage = (event) => {
       const data = JSON.parse(event.data);
-      setChats(data);
+     setChats(data);
     };
 
     eventSource.onerror = (error) => {
@@ -32,9 +35,27 @@ const Chat = () => {
     };
   }, []);
 
+  const handleSendMessage = async () => {
+    if (message != "") {
+      socket.emit("message", {
+        message,
+        userId: getCookie("id") as string,
+        chatId: seletChat,
+      });
+      setMessage("");
+    }
+  };
+
+  const handleKeyDown = async (event: any) => {
+    if (event.key === "Enter") {
+      if (message != "") {
+        await handleSendMessage();
+      }
+    }
+  };
+
   return (
     <Grid container spacing={0} sx={{ height: "82vh" }}>
-      {/* Sidebar */}
       <Grid item xs={12} md={3}>
         <Paper
           elevation={1}
@@ -49,7 +70,9 @@ const Chat = () => {
                       mensagems={chat.mensagems}
                       name={user.name}
                       status={user.status}
-                      id={user.id}
+                      setSeletChat={setSeletChat}
+                      id={chat.id}
+                      userId={user.id}
                     />
                   </>
                 ) : null
@@ -59,49 +82,45 @@ const Chat = () => {
         </Paper>
       </Grid>
 
-      {/* Main Chat Area */}
       <Grid item xs={12} md={9}>
         <Paper elevation={1} sx={{ height: "100%", p: 2 }}>
-          {/* Chat Messages */}
-          <Box sx={{ maxHeight: "calc(100% - 56px)", overflowY: "auto" }}>
-            <MessageBox
-              position={"right"}
-              titleColor={theme.palette.primary.main}
-              type={"text"}
-              focus
-              status="read"
-              forwarded={false}
-              id={"1"}
-              notch
-              removeButton={false}
-              replyButton={false}
-              retracted={false}
-              title={"Francisco Wesley"}
-              text="Here is a text type message box"
-              date={new Date()}
-            />
-          </Box>
-
-          <Box
-            sx={{
-              bottom: 25,
-              width: "70%",
-              position: "fixed",
-            }}
-          >
-            <Stack direction="row" spacing={2}>
-              <TextField
-                sx={{ width: "100%" }}
-                label="Digite sua mensagem"
-                variant="outlined"
-              />
-              <Box sx={{ display: "flex", alignItems: "center" }}>
-                <IconButton color="primary" aria-label="send">
-                  <SendIcon />
-                </IconButton>
+          {seletChat !== "" ? (
+            <Box>
+                <Messages
+                  seletChat={seletChat}
+                  setMessages={setMessages}
+                  messages={messages}
+                />
+  
+              <Box
+                sx={{
+                  bottom: 25,
+                  width: "70%",
+                  position: "fixed",
+                }}
+              >
+                <Stack direction="row" spacing={2}>
+                  <TextField
+                    sx={{ width: "100%" }}
+                    label="Digite sua mensagem"
+                    variant="outlined"
+                    value={message}
+                    onChange={(event) => setMessage(event.target.value)}
+                    onKeyDown={handleKeyDown}
+                  />
+                  <Box sx={{ display: "flex", alignItems: "center" }}>
+                    <IconButton
+                      onClick={() => handleSendMessage()}
+                      color="primary"
+                      aria-label="send"
+                    >
+                      <SendIcon />
+                    </IconButton>
+                  </Box>
+                </Stack>
               </Box>
-            </Stack>
-          </Box>
+            </Box>
+          ) : null}
         </Paper>
       </Grid>
     </Grid>

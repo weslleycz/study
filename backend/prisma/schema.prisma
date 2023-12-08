@@ -21,11 +21,17 @@ model User {
   Enrollment    Enrollment[]
   notifications Notification[]
   status        Status         @default(Online)
-  Chat          Chat?          @relation(fields: [chatId], references: [id])
-  chatId        String?        @db.ObjectId
   Mensagem      Mensagem[]
 
   @@map("Users")
+}
+
+model Chat {
+  id        String     @id @default(auto()) @map("_id") @db.ObjectId
+  mensagems Mensagem[]
+  users     Json[]       
+
+  @@map("Chats")
 }
 
 model Course {
@@ -110,14 +116,6 @@ model Notification {
   userId String? @db.ObjectId
 
   @@map("Notifications")
-}
-
-model Chat {
-  id        String     @id @default(auto()) @map("_id") @db.ObjectId
-  users     User[]
-  mensagems Mensagem[]
-
-  @@map("Chats")
 }
 
 model Mensagem {

@@ -8,12 +8,30 @@ type Props = {
   status: string;
   name: string;
   mensagems: any[];
+  setSeletChat: any;
+  userId: string;
 };
 //userId: "unread" getCookie("id") as string
-export const ChatItem = ({ id, status, name, mensagems }: Props) => {
+export const ChatItem = ({
+  id,
+  status,
+  name,
+  mensagems,
+  userId,
+  setSeletChat,
+}: Props) => {
   return (
     <>
-      <Paper elevation={0} sx={{ p: 2, backgroundColor: "#ffffff" }}>
+      <Paper
+        onClick={() => setSeletChat(id)}
+        elevation={0}
+        sx={{
+          p: 2,
+          backgroundColor: "#ffffff",
+          cursor: "pointer",
+          marginTop: 1,
+        }}
+      >
         <Box display="flex" alignItems="center">
           <Avatar
             sx={{
@@ -21,7 +39,7 @@ export const ChatItem = ({ id, status, name, mensagems }: Props) => {
               marginRight: 0.2,
             }}
             alt={name}
-            src={process.env.API_Url + `/users/avatar/${id}`}
+            src={process.env.API_Url + `/users/avatar/${userId}`}
           />
           <Brightness1Icon
             sx={{

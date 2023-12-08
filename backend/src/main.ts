@@ -1,26 +1,50 @@
 import { NestFactory } from '@nestjs/core';
-import { AppModule } from './app.module';
-import * as bodyParser from 'body-parser';
-import { CorsOptions } from '@nestjs/common/interfaces/external/cors-options.interface';
+import { IoAdapter } from '@nestjs/platform-socket.io';
 import * as dotenv from 'dotenv';
-import { ValidationPipe } from '@nestjs/common';
+import { AppModule } from './app.module';
+import { Server } from 'socket.io';
+
+class SocketIoAdapter extends IoAdapter {
+  private readonly server: Server;
+
+  constructor(app) {
+    super(app);
+
+    this.server = new Server(app.getHttpServer(), {
+      cors: {
+        origin: '*',
+        methods: ['GET', 'POST'],
+        credentials: true,
+      },
+    });
+  }
+
+  createIOServer(port: number, options?: any): any {
+    return this.server;
+  }
+}
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
-    bodyParser: false,
+    // bodyParser: false,
   });
-  app.use(bodyParser.json({ limit: '1024mb' }));
-  app.use(bodyParser.urlencoded({ limit: '1024mb', extended: true }));
+
   dotenv.config();
-  const corsOptions: CorsOptions = {
+
+  const corsOptions = {
     origin: '*',
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     allowedHeaders: 'Content-Type,Authorization,token',
     credentials: true,
     optionsSuccessStatus: 204,
   };
-  app.useGlobalPipes(new ValidationPipe());
+
   app.enableCors(corsOptions);
+
+  app.useWebSocketAdapter(new SocketIoAdapter(app));
+
   await app.listen(process.env.PORT);
+
+  console.log(`Aplicação está rodando na porta ${process.env.PORT}`);
 }
 bootstrap();
