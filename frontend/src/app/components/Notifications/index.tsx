@@ -1,9 +1,8 @@
-import NotificationsIcon from "@mui/icons-material/Notifications";
-import DeleteIcon from "@mui/icons-material/Delete";
-import { Badge, Box, Menu, MenuItem } from "@mui/material";
-import { useState } from "react";
 import { api } from "@/app/services/api";
-import { getCookie } from "cookies-next";
+import DeleteIcon from "@mui/icons-material/Delete";
+import NotificationsIcon from "@mui/icons-material/Notifications";
+import { Badge, Box, Menu } from "@mui/material";
+import { useState } from "react";
 
 type Props = {
   notifications: any[];
@@ -38,7 +37,7 @@ export const Notifications = ({ notifications, setNotifications }: Props) => {
         badgeContent={notifications.length}
         color="info"
       >
-        <NotificationsIcon color="primary" />
+        <NotificationsIcon sx={{cursor: "pointer"}} color="primary" />
       </Badge>
 
       <Menu

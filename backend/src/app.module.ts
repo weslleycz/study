@@ -12,10 +12,17 @@ import { BcryptService } from './services/bcrypt.service';
 import { RedisService } from './services/redis.service';
 import { NotificationsController } from './controllers/notifications/notifications.controller';
 import { NotificationsService } from './controllers/notifications/notifications.service';
+import { ChatController } from './controllers/chat/chat.controller';
+import { ChatService } from './controllers/chat/chat.service';
 
 @Module({
   imports: [],
-  controllers: [AppController, UserController, NotificationsController],
+  controllers: [
+    AppController,
+    UserController,
+    NotificationsController,
+    ChatController,
+  ],
   providers: [
     AppService,
     PrismaService,
@@ -24,6 +31,7 @@ import { NotificationsService } from './controllers/notifications/notifications.
     UserService,
     RedisService,
     BcryptService,
+    ChatService,
     NotificationsService,
     {
       provide: APP_FILTER,

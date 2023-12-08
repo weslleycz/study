@@ -55,6 +55,18 @@ const Perfil = () => {
     }
   };
 
+  const sendMessage = async () => {
+    try {
+      const res = await api.post("/chat", {
+        idDestinatario: params?.id,
+        idRender: getCookie("id") as string,
+      });
+      console.log(res.data);
+      router.push("/chat");
+    } catch (error) {
+      console.log(error);
+    }
+  };
   return (
     <>
       <Container
@@ -111,6 +123,7 @@ const Perfil = () => {
           </Box>
           <Box display={"flex"} justifyContent={"center"}>
             <MensagemBtn
+              onClick={sendMessage}
               id={getCookie("id") as string}
               userID={params?.id as string}
             />

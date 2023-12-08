@@ -51,7 +51,6 @@ export class NotificationsController {
 
   @Delete(':id')
   async delete(@Param('id') id: string) {
-    console.log(id);
     return await this.notificationsService.delete(id);
   }
 }

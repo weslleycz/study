@@ -8,6 +8,7 @@ import { useEffect, useState } from "react";
 
 import { theme } from "../../theme";
 import { Notifications } from "../Notifications";
+import Link from "next/link";
 
 type Props = {
   name: string;
@@ -60,9 +61,11 @@ export const AvatarMenu = ({ name }: Props) => {
       {" "}
       <Stack direction="row" spacing={3}>
         <Box display={"flex"} justifyContent={"center"} alignItems={"center"}>
-          <Badge badgeContent={0} color="info">
-            <InsertCommentIcon color="primary" />
-          </Badge>
+          <Link href={"/chat"}>
+            <Badge badgeContent={0} color="info">
+              <InsertCommentIcon sx={{ cursor: "pointer" }} color="primary" />
+            </Badge>
+          </Link>
           <Notifications
             setNotifications={setNotifications}
             notifications={notifications}
@@ -78,7 +81,9 @@ export const AvatarMenu = ({ name }: Props) => {
               alt="User Avatar"
               src={process.env.API_Url + `/users/avatar/${getCookie("id")}`}
             />
-            <Brightness1Icon sx={{ color: "#2CCA37", fontSize: 13 }} />
+            <Brightness1Icon
+              sx={{ color: "#2CCA37", fontSize: 13, cursor: "pointer" }}
+            />
           </Box>
 
           <ExpandMoreIcon
