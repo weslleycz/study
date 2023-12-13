@@ -135,6 +135,7 @@ model Mensagem {
 enum Roles {
   Teacher
   Student
+  ADMIN
 }
 
 enum Status {
