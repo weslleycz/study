@@ -77,4 +77,27 @@ export class ChatService {
     );
     return filteredChats;
   }
+
+  async getNotifications(id: string) {
+    if (
+      (await this.redisService.getValue(`chat/notifications${id}`)) === null
+    ) {
+      const chatNotifications = await this.prismaService.mensagem.findMany({
+        where: {
+          userId: id,
+          status: 'unread',
+        },
+      });
+      await this.redisService.setValue(
+        `chat/notifications${id}`,
+        JSON.stringify(chatNotifications.length),
+      );
+      return chatNotifications.length;
+    } else {
+      const chatNotifications = await this.redisService.getValue(
+        `chat/notifications${id}`,
+      );
+      return JSON.parse(chatNotifications);
+    }
+  }
 }

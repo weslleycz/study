@@ -43,6 +43,12 @@ async function bootstrap() {
 
   app.useWebSocketAdapter(new SocketIoAdapter(app));
 
+  app.setGlobalPrefix('api');
+
+  app.use((req, res, next) => {
+    next();
+  });
+
   await app.listen(process.env.PORT);
 
   console.log(`Aplicação está rodando na porta ${process.env.PORT}`);

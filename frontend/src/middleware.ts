@@ -2,7 +2,7 @@ import { NextApiResponse } from "next";
 import { NextRequest, NextResponse } from "next/server";
 
 export const config = {
-  matcher: ["/_not-found", "/chat", "/courses", "/auth","/perfil/:page*"],
+  matcher: ["/_not-found", "/chat", "/courses", "/auth", "/perfil/:page*"],
 };
 
 export async function middleware(req: NextRequest, res: NextApiResponse) {
@@ -14,6 +14,8 @@ export async function middleware(req: NextRequest, res: NextApiResponse) {
       return NextResponse.next();
     }
   } else {
-    return NextResponse.rewrite(new URL("/auth", req.url));
+    const url = req.nextUrl.clone();
+    url.pathname = "/auth";
+    return NextResponse.rewrite(url);
   }
 }

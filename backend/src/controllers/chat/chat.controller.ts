@@ -33,4 +33,26 @@ export class ChatController {
       res.end();
     });
   }
+
+  @Get('/notifications/:id')
+  async getNotifications(@Req() req: Request, @Res() res: Response) {
+    res.setHeader('Content-Type', 'text/event-stream');
+    res.setHeader('Cache-Control', 'no-cache');
+    res.setHeader('Connection', 'keep-alive');
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Methods', 'GET');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+    res.flushHeaders();
+    const interval = setInterval(async () => {
+      const notifications = await this.chatService.getNotifications(
+        req.params.id as string,
+      );
+      res.write(`data: ${JSON.stringify(notifications)}\n\n`);
+    }, 1000);
+
+    res.on('close', async () => {
+      clearInterval(interval);
+      res.end();
+    });
+  }
 }

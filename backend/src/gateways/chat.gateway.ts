@@ -1,23 +1,19 @@
 import {
-  WebSocketGateway,
-  SubscribeMessage,
-  WebSocketServer,
   OnGatewayConnection,
   OnGatewayDisconnect,
+  SubscribeMessage,
+  WebSocketGateway,
+  WebSocketServer,
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
 import { PrismaService } from 'src/services/prisma.service';
-import { RedisService } from 'src/services/redis.service';
 
 @WebSocketGateway()
 export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @WebSocketServer()
   server: Server;
 
-  constructor(
-    private readonly prismaService: PrismaService,
-    private readonly redisService: RedisService,
-  ) {}
+  constructor(private readonly prismaService: PrismaService) {}
 
   handleConnection(client: Socket, data: any, ...args: any[]) {}
 

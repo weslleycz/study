@@ -1,0 +1,11 @@
+{
+  "name": "study",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "https://github.com/weslleycz/study.git",
+  "author": "weslleycz <weslleysouza22@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "pm2": "^5.3.0"
+  }
+}

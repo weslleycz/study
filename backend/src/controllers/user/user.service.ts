@@ -5,7 +5,6 @@ import { JWTService } from 'src/services/jwt.service';
 import { Roles } from '@prisma/client';
 import { BcryptService } from 'src/services/bcrypt.service';
 import { NextcloudService } from 'src/services/nextcloud.service';
-import { RedisService } from 'src/services/redis.service';
 
 @Injectable()
 export class UserService {
@@ -14,7 +13,6 @@ export class UserService {
     private readonly jWTService: JWTService,
     private readonly bcryptService: BcryptService,
     private readonly nextcloudService: NextcloudService,
-    private readonly redisService: RedisService,
   ) {}
   async create({ email, name, password }: CreateUserDTO, role: Roles) {
     try {
@@ -22,17 +20,11 @@ export class UserService {
       const user = await this.prismaService.user.create({
         data: { email, name, password: cryptPassword, role },
       });
-      await this.prismaService.notification.create({
-        data: {
-          text: 'Seja muito bem-vindo(a) à nossa comunidade!',
-          title: 'Bem-vindo(a)!',
-          userId: user.id,
-        },
-      });
       await this.nextcloudService.createFolder(user.id);
       const token = this.jWTService.login(user.id, user.role);
       return { token, id: user.id };
     } catch (error) {
+      console.log(error);
       throw new HttpException('Email já registrado', 409);
     }
   }

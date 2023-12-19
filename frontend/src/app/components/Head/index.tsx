@@ -48,7 +48,7 @@ const Head = () => {
   }, []);
 
   const pathname = usePathname();
-  return pathname !== "/auth" ? (
+  return pathname !== "/auth"  ? (
     <div>
       <Box className={styles.container}>
         <Box>
@@ -70,7 +70,7 @@ const Head = () => {
                     </Link>
                   ) : (
                     <Link href={"/dashboard"}>
-                      <Button variant="text">Meus cursos</Button>
+                      <Button variant="text">Dashboard</Button>
                     </Link>
                   )}
                 </Box>

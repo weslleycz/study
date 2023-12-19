@@ -11,23 +11,12 @@ export class NotificationsService {
 
   async getNotification(id: string) {
     try {
-      if ((await this.redisService.getValue(id)) !== null) {
-        const notification = await this.redisService.getValue(
-          `notifications${id}`,
-        );
-        return JSON.parse(notification);
-      } else {
-        const notifications = await this.prismaService.notification.findMany({
-          where: {
-            userId: id,
-          },
-        });
-        await this.redisService.setValue(
-          `notifications${id}`,
-          JSON.stringify(notifications),
-        );
-        return notifications;
-      }
+      const notifications = await this.prismaService.notification.findMany({
+        where: {
+          userId: id,
+        },
+      });
+      return notifications;
     } catch (error) {
       console.log(error);
     }
@@ -44,10 +33,6 @@ export class NotificationsService {
         userId: notification.userId,
       },
     });
-    await this.redisService.setValue(
-      `notifications${id}`,
-      JSON.stringify(notifications),
-    );
     return notifications;
   }
 }

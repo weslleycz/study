@@ -1,0 +1,5 @@
+docker exec nginx nginx -T
+docker exec -it nginx nginx -s reload
+docker exec nginx nginx -t
+docker-compose down
+docker-compose up -d

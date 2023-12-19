@@ -1,6 +1,7 @@
 import { Box, Grid, Typography } from "@mui/material";
 import styles from "./styles.module.scss";
 import useMediaQuery from "@mui/material/useMediaQuery";
+import Heroimg from "../../../../public/heroimg.png";
 import Image from "next/image";
 
 export const Hero = () => {
@@ -29,9 +30,7 @@ export const Hero = () => {
               <Image
                 className={styles.heroImage}
                 alt="Hero Image"
-                width={100}
-                height={100}
-                src={"heroimg.svg"}
+                src={Heroimg}
               />
             </Grid>
           </Grid>

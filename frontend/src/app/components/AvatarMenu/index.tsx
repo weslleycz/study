@@ -15,6 +15,7 @@ type Props = {
 };
 export const AvatarMenu = ({ name }: Props) => {
   const [notifications, setNotifications] = useState<any[]>([]);
+  const [mensagens, setMensagens] = useState<any[]>([]);
   useEffect(() => {
     const eventSource = new EventSource(
       `${process.env.API_Url}/notifications?id=${getCookie("id")}`
@@ -23,6 +24,28 @@ export const AvatarMenu = ({ name }: Props) => {
     eventSource.onmessage = (event) => {
       const data = JSON.parse(event.data);
       setNotifications(data);
+    };
+
+    eventSource.onerror = (error) => {
+      console.error("EventSource failed:", error);
+      eventSource.close();
+    };
+
+    return () => {
+      eventSource.close();
+    };
+  }, []);
+
+  useEffect(() => {
+    const eventSource = new EventSource(
+      `${process.env.API_Url}/chat/notifications/${getCookie("id")}`
+    );
+
+    eventSource.onmessage = (event) => {
+      const data = JSON.parse(event.data);
+      console.log(data);
+      setMensagens(data);
+     // setNotifications(data);
     };
 
     eventSource.onerror = (error) => {
@@ -62,7 +85,7 @@ export const AvatarMenu = ({ name }: Props) => {
       <Stack direction="row" spacing={3}>
         <Box display={"flex"} justifyContent={"center"} alignItems={"center"}>
           <Link href={"/chat"}>
-            <Badge badgeContent={0} color="info">
+            <Badge badgeContent={mensagens} color="info">
               <InsertCommentIcon sx={{ cursor: "pointer" }} color="primary" />
             </Badge>
           </Link>

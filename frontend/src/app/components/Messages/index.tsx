@@ -1,6 +1,6 @@
 import { socket } from "@/app/services/socket";
 import { theme } from "@/app/theme";
-import { Box } from "@mui/material";
+import { Box, useMediaQuery } from "@mui/material";
 import { getCookie } from "cookies-next";
 import { useEffect, useRef, useState } from "react";
 import { MessageBox } from "react-chat-elements";
@@ -12,6 +12,8 @@ type Props = {
 };
 
 export const Messages = ({ messages, setMessages, seletChat }: Props) => {
+
+  const matches = useMediaQuery("(min-width:600px)");
   useEffect(() => {
     socket.emit("message", {
       chatId: seletChat,
@@ -42,7 +44,7 @@ export const Messages = ({ messages, setMessages, seletChat }: Props) => {
       <Box
         ref={boxRef}
         sx={{
-          height: "450px",
+          height: matches  ? "450px" : "670px" ,
           overflowY: "scroll",
           display: "flex",
           flexDirection: "column",
