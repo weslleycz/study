@@ -45,11 +45,11 @@ services:
     image: nginx
     container_name: nginx
     ports:
-      - "80:80"
+        - 80:80
+        - 443:443
     volumes:
-      - ./nginx-conf:/etc/nginx/conf.d  # Monte o volume para a pasta com os arquivos de configuração
-    depends_on:
-      - nextcloud
+      - ./nginx-conf:/etc/nginx/conf.d
+      - ./ssl:/etc/nginx/ssl
     networks:
       - nginx-network
 

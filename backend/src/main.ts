@@ -3,6 +3,7 @@ import { IoAdapter } from '@nestjs/platform-socket.io';
 import * as dotenv from 'dotenv';
 import { AppModule } from './app.module';
 import { Server } from 'socket.io';
+import { json } from 'body-parser';
 
 class SocketIoAdapter extends IoAdapter {
   private readonly server: Server;
@@ -26,7 +27,7 @@ class SocketIoAdapter extends IoAdapter {
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
-    // bodyParser: false,
+    // bodyParser: true,
   });
 
   dotenv.config();
@@ -43,9 +44,13 @@ async function bootstrap() {
 
   app.useWebSocketAdapter(new SocketIoAdapter(app));
 
+  app.use(json({ limit: '100mb' }));
+
   app.setGlobalPrefix('api');
 
   app.use((req, res, next) => {
+    console.log(1245);
+
     next();
   });
 

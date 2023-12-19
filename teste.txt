@@ -3,3 +3,6 @@ docker exec -it nginx nginx -s reload
 docker exec nginx nginx -t
 docker-compose down
 docker-compose up -d
+sudo apt-get install certbot
+docker exec nginx service nginx restart
+docker logs -f nginx
