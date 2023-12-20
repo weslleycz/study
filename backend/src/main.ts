@@ -49,8 +49,6 @@ async function bootstrap() {
   app.setGlobalPrefix('api');
 
   app.use((req, res, next) => {
-    console.log(1245);
-
     next();
   });
 

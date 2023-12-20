@@ -2,14 +2,14 @@
 
 import { api } from "@/app/services/api";
 import SchoolIcon from "@mui/icons-material/School";
-import { Badge, Box, Button, Stack } from "@mui/material";
+import { Box, Button, Stack } from "@mui/material";
 import { getCookie } from "cookies-next";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { decodeToken } from "react-jwt";
 import { AvatarMenu } from "../AvatarMenu";
 import styles from "./styles.module.scss";
-import { decodeToken } from "react-jwt";
 
 const Head = () => {
   const [name, setName] = useState("");
@@ -43,6 +43,7 @@ const Head = () => {
     const token = getCookie("token");
     if (token) {
       const role = decodeToken(token) as any;
+      console.log(role?.permissions);
       setPermissions(role?.permissions);
     }
   }, []);

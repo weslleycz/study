@@ -19,6 +19,7 @@ const Perfil = () => {
   const [name, setName] = useState("");
   const [role, setRole] = useState("Student");
   const [userId, setUserId] = useState("");
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     (async () => {

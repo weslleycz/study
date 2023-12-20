@@ -13,6 +13,8 @@ import {
   TableCell,
   TableBody,
   Chip,
+  Button,
+  Divider,
 } from "@mui/material";
 import { theme } from "../theme";
 import {
@@ -27,6 +29,9 @@ import {
 } from "chart.js";
 import { Line } from "react-chartjs-2";
 import { faker } from "@faker-js/faker";
+import { addMonths, format } from "date-fns";
+import { ptBR } from "date-fns/locale";
+import { CommentsDashboard } from "../components/CommentsDashboard";
 
 ChartJS.register(
   CategoryScale,
@@ -46,12 +51,15 @@ const options = {
     },
     title: {
       display: true,
-      text: "Chart.js Line Chart",
+      text: "Vendas nos últimos 6 meses.",
     },
   },
 };
 
-const labels = ["January", "February", "March", "April", "May", "June", "July"];
+const labels = Array.from({ length: 6 }, (_, index) => {
+  const date = addMonths(new Date(), -index);
+  return format(date, "MMMM", { locale: ptBR });
+}).reverse();
 
 const data = {
   labels,
@@ -59,14 +67,9 @@ const data = {
     {
       label: "Dataset 1",
       data: labels.map(() => faker.datatype.number({ min: -1000, max: 1000 })),
-      borderColor: theme.palette.primary.main,
-      backgroundColor: "rgb(255, 255, 255)",
-    },
-    {
-      label: "Dataset 2",
-      data: labels.map(() => faker.datatype.number({ min: -1000, max: 1000 })),
-      borderColor: "rgb(235, 53, 53)",
-      backgroundColor: "rgb(255, 255, 255)",
+      borderColor: theme.palette.info.main,
+      backgroundColor: theme.palette.primary.main,
+      fill: true,
     },
   ],
 };
@@ -87,44 +90,57 @@ const Dashboard = () => {
           </Typography>
           <Grid container spacing={2}>
             <Grid item xs={8}>
-              <Line options={options} data={data} />
-              <Box marginTop={4}>
-                <Typography color={"grey"} gutterBottom>
-                  Cursos
-                </Typography>
-                <TableContainer component={Paper}>
-                  <Table>
-                    <TableHead>
-                      <TableRow>
-                        <TableCell></TableCell>
-                        <TableCell>Duração</TableCell>
-                        <TableCell>Alunos</TableCell>
-                      </TableRow>
-                    </TableHead>
-                    <TableBody>
-                      {cursos.map((curso, index) => (
-                        <TableRow key={index}>
-                          <TableCell
-                            sx={{
-                              color: theme.palette.primary.main,
-                              fontWeight: 800,
-                            }}
-                          >
-                            {curso.nome}
-                          </TableCell>
-                          <TableCell>{curso.duracao}</TableCell>
-                          <TableCell sx={{ color: theme.palette.primary.main }}>
-                            <Chip color="info" label={curso.students} />
-                          </TableCell>
+              <Box marginTop={4} marginBottom={1}>
+                <Box
+                  marginBottom={2}
+                  justifyContent={"space-between"}
+                  display={"flex"}
+                >
+                  <Typography color={"grey"} gutterBottom>
+                    Cursos
+                  </Typography>
+                  <Button variant="contained">Criar curso</Button>
+                </Box>
+                <Paper elevation={24}>
+                  <TableContainer>
+                    <Table>
+                      <TableHead>
+                        <TableRow>
+                          <TableCell></TableCell>
+                          <TableCell>Duração</TableCell>
+                          <TableCell>Alunos</TableCell>
                         </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
-                </TableContainer>
+                      </TableHead>
+                      <TableBody>
+                        {cursos.map((curso, index) => (
+                          <TableRow key={index}>
+                            <TableCell
+                              sx={{
+                                color: theme.palette.primary.main,
+                                fontWeight: 800,
+                              }}
+                            >
+                              {curso.nome}
+                            </TableCell>
+                            <TableCell>{curso.duracao}</TableCell>
+                            <TableCell
+                              sx={{ color: theme.palette.primary.main }}
+                            >
+                              <Chip color="info" label={curso.students} />
+                            </TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </TableContainer>
+                </Paper>
               </Box>
+              <Paper elevation={24}>
+                <Line options={options} data={data} />
+              </Paper>
             </Grid>
             <Grid item xs={4}>
-              2
+              <CommentsDashboard />
             </Grid>
           </Grid>
         </Box>
