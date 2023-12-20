@@ -1,37 +1,37 @@
 "use client";
 
+import { faker } from "@faker-js/faker";
 import {
   Box,
+  Button,
+  Chip,
   Container,
   Grid,
-  Typography,
-  TableContainer,
-  Table,
   Paper,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
   TableHead,
   TableRow,
-  TableCell,
-  TableBody,
-  Chip,
-  Button,
-  Divider,
+  Typography
 } from "@mui/material";
-import { theme } from "../theme";
 import {
-  Chart as ChartJS,
   CategoryScale,
+  Chart as ChartJS,
+  Legend,
+  LineElement,
   LinearScale,
   PointElement,
-  LineElement,
   Title,
   Tooltip,
-  Legend,
 } from "chart.js";
-import { Line } from "react-chartjs-2";
-import { faker } from "@faker-js/faker";
 import { addMonths, format } from "date-fns";
 import { ptBR } from "date-fns/locale";
+import { Line } from "react-chartjs-2";
 import { CommentsDashboard } from "../components/CommentsDashboard";
+import { theme } from "../theme";
+import Link from "next/link";
 
 ChartJS.register(
   CategoryScale,
@@ -99,7 +99,9 @@ const Dashboard = () => {
                   <Typography color={"grey"} gutterBottom>
                     Cursos
                   </Typography>
+                  <Link href={"/dashboard/curso"}>
                   <Button variant="contained">Criar curso</Button>
+                  </Link>
                 </Box>
                 <Paper elevation={24}>
                   <TableContainer>
@@ -135,7 +137,7 @@ const Dashboard = () => {
                   </TableContainer>
                 </Paper>
               </Box>
-              <Paper elevation={24}>
+              <Paper sx={{p:2}} elevation={24}>
                 <Line options={options} data={data} />
               </Paper>
             </Grid>
