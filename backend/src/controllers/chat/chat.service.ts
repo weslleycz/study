@@ -44,38 +44,47 @@ export class ChatService {
   }
 
   async allChat(id: string) {
-    const chats = await this.prismaService.chat.findMany({
-      include: {
-        mensagems: {
-          orderBy: {
-            order: 'asc',
-          },
-          select: {
-            status: true,
-            userId: true,
-            user: true,
+    if (!(await this.redisService.getValue(`allChat${id}`))) {
+      const chats = await this.prismaService.chat.findMany({
+        include: {
+          mensagems: {
+            orderBy: {
+              order: 'asc',
+            },
+            select: {
+              status: true,
+              userId: true,
+              user: true,
+            },
           },
         },
-      },
-    });
-    const filteredChats = await Promise.all(
-      chats
-        .filter((chat) => {
-          return chat.users.some((user: any) => user.id === id);
-        })
-        .map(async (chat: any) => {
-          const users = await this.prismaService.user.findMany({
-            where: {
-              id: {
-                in: chat.users.map((user: any) => user.id),
+      });
+      const filteredChats = await Promise.all(
+        chats
+          .filter((chat) => {
+            return chat.users.some((user: any) => user.id === id);
+          })
+          .map(async (chat: any) => {
+            const users = await this.prismaService.user.findMany({
+              where: {
+                id: {
+                  in: chat.users.map((user: any) => user.id),
+                },
               },
-            },
-          });
-          chat.users = users;
-          return chat;
-        }),
-    );
-    return filteredChats;
+            });
+            chat.users = users;
+            return chat;
+          }),
+      );
+      await this.redisService.setValue(
+        `allChat${id}`,
+        JSON.stringify(filteredChats),
+      );
+      return filteredChats;
+    } else {
+      const allChats = await this.redisService.getValue(`allChat${id}`);
+      return JSON.parse(allChats);
+    }
   }
 
   async getNotifications(id: string) {

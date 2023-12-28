@@ -5,11 +5,11 @@ import { Hero } from "./components/Hero";
 import { Secao24 } from "./components/Secao24";
 import { Multiplataforma } from "./components/Multiplataforma";
 
-export default function Home() {
+export default function Page() {
   return (
     <>
       <Container maxWidth="lg">
-        {/* <Lessons /> */}
+        <Lessons />
         <Hero />
         <Secao24/>
         <Multiplataforma/>

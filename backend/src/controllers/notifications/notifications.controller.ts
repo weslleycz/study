@@ -19,7 +19,6 @@ export class NotificationsController {
     res.setHeader('Access-Control-Allow-Methods', 'GET');
     res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
     res.flushHeaders();
-
     await this.prismaService.user.update({
       where: {
         id: req.query.id as string,

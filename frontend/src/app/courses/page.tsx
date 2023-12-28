@@ -4,7 +4,7 @@ import { Container, Typography, Grid } from "@mui/material";
 import { useState } from "react";
 import { CardCourse } from "../components/CardCourse";
 
-export const Courses = () => {
+export const Page = () => {
   const [allCourses, setAllCourses] = useState([
     {
       name: "Python & MySQL",
@@ -50,4 +50,4 @@ export const Courses = () => {
   );
 };
 
-export default Courses;
+export default Page;

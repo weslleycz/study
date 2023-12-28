@@ -1,5 +1,6 @@
 "use client";
 
+import { api } from "@/app/services/api";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import CloseIcon from "@mui/icons-material/Close";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
@@ -9,7 +10,9 @@ import CreateIcon from "@mui/icons-material/Create";
 import InsertPhotoIcon from "@mui/icons-material/InsertPhoto";
 import SquareIcon from "@mui/icons-material/Square";
 import UploadIcon from "@mui/icons-material/Upload";
+import { LoadingButton } from "@mui/lab";
 import {
+  Alert,
   Box,
   Button,
   Container,
@@ -22,16 +25,20 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
+import { getCookie } from "cookies-next";
 import dynamic from "next/dynamic";
+import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { ChromePicker } from "react-color";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import { theme } from "../../theme";
 
 const StepLabel = dynamic(() => import("@mui/material/StepLabel"), {
   ssr: false,
 });
 
-const Curso = () => {
+const Page = () => {
   const [primaryColor, setPrimaryColor] = useState(theme.palette.primary.main);
   const [secondaryColor, setSecondaryColor] = useState(
     theme.palette.secondary.main
@@ -63,17 +70,18 @@ const Curso = () => {
     setShowPrimaryColorPicker(false);
   };
 
-  const handleImageUpload = (e: any) => {
-    const file = e.target.files[0];
+  const handleImageUpload = (event: any) => {
+    const selectedFile = event.target.files[0];
 
-    if (file) {
-      const reader = new FileReader() as any;
+    if (selectedFile) {
+      const reader = new FileReader();
 
       reader.onloadend = () => {
-        setImage(reader.result);
+        const base64Content = reader.result.split(",")[1];
+        setImage(reader.result); // Defina a imagem no estado
       };
 
-      reader.readAsDataURL(file);
+      reader.readAsDataURL(selectedFile);
     }
   };
 
@@ -122,7 +130,70 @@ const Curso = () => {
     setDescription(event.target.value);
   };
 
+  const router = useRouter();
+
   const [stepsState, setStepsState] = useState(0);
+  const [errors, setErrors] = useState({
+    tite: false,
+    description: false,
+    primary: false,
+    secondary: false,
+    image: false,
+  });
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleSubmitData = async () => {
+    const error = { ...errors };
+    error.description = false;
+    error.tite = false;
+    setErrors({ ...error });
+    if (name === "") {
+      error.tite = true;
+      setErrors({ ...error });
+      return;
+    }
+    if (description === "") {
+      error.description = true;
+      setErrors({ ...error });
+      return;
+    }
+    setStepsState(1);
+  };
+
+  const handleSubmit = async () => {
+    const error = { ...errors };
+    error.image = false;
+    setErrors({ ...error });
+    if (image === null) {
+      error.image = true;
+      setErrors({ ...error });
+      return;
+    }
+    try {
+      setIsLoading(true)
+      const course = await api.post(
+        "/course",
+        {
+          description,
+          primary: primaryColor,
+          secondary: secondaryColor,
+          image,
+          name,
+        },
+        {
+          headers: {
+            token: getCookie("token"),
+          },
+        }
+      );
+      toast.success("Curso criado!");
+      setIsLoading(false)
+      router.push(`/dashboard/curso/${course.data.id}`);
+    } catch (error) {
+      setIsLoading(false)
+      toast.error("Não foi possivel criar o Curso!");
+    }
+  };
 
   return (
     <Container maxWidth="md" sx={{ marginTop: 2, marginBottom: 2, p: 2 }}>
@@ -139,7 +210,7 @@ const Curso = () => {
         <Paper sx={{ p: 4 }} elevation={24}>
           {stepsState === 0 ? (
             <>
-              <Box p={1}>
+              <Box sx={{ marginBottom: 2 }} p={1}>
                 <Stack direction="row" spacing={1}>
                   <CreateIcon sx={{ color: theme.palette.primary.main }} />
                   <Typography
@@ -169,7 +240,13 @@ const Curso = () => {
                     onChange={handleChangeName}
                     fullWidth
                     variant="outlined"
+                    color={errors.tite ? "error" : "primary"}
                   />
+                  {errors.tite ? (
+                    <Alert sx={{ marginTop: 0.5 }} severity="error">
+                      Por favor, forneça um título para continuar.
+                    </Alert>
+                  ) : null}
                 </Box>
                 <Box>
                   <InputLabel>Descrição</InputLabel>
@@ -178,8 +255,14 @@ const Curso = () => {
                     onChange={handleChangeDescription}
                     fullWidth
                     multiline
+                    color={errors.description ? "error" : "primary"}
                     rows={8}
                   />
+                  {errors.description ? (
+                    <Alert sx={{ marginTop: 0.5 }} severity="error">
+                      Por favor, forneça uma descrição para continuar.
+                    </Alert>
+                  ) : null}
                 </Box>
               </Stack>
             </>
@@ -304,6 +387,7 @@ const Curso = () => {
                           justifyContent={"center"}
                           alignItems={"center"}
                           bgcolor={"#F5F5F5"}
+                          sx={{ border: errors.image ? "3px dotted red" : "" }}
                           marginBottom={1}
                         >
                           <UploadIcon
@@ -357,33 +441,40 @@ const Curso = () => {
               </Box>
             </>
           )}
+          <Box
+            display={"flex"}
+            justifyContent={"end"}
+            sx={{ marginTop: 2, marginBottom: 1 }}
+          >
+            <Stack direction="row" spacing={2}>
+              <Button
+                disabled={stepsState === 0}
+                startIcon={<ArrowBackIcon />}
+                onClick={() => setStepsState(0)}
+                variant="outlined"
+              >
+                Voltar
+              </Button>
+              {stepsState === 0 ? (
+                <Button onClick={() => handleSubmitData()} variant="contained">
+                  Próximo
+                </Button>
+              ) : (
+                <LoadingButton
+                  loading={isLoading}
+                  onClick={() => handleSubmit()}
+                  variant="contained"
+                >
+                  Criar
+                </LoadingButton>
+              )}
+            </Stack>
+          </Box>
         </Paper>
       </Container>
-      <Box
-        display={"flex"}
-        justifyContent={"end"}
-        sx={{ marginTop: 1, marginBottom: 1 }}
-      >
-        <Stack direction="row" spacing={2}>
-          <Button
-            disabled={stepsState === 0}
-            startIcon={<ArrowBackIcon />}
-            onClick={() => setStepsState(0)}
-            variant="outlined"
-          >
-            Voltar
-          </Button>
-          {stepsState === 0 ? (
-            <Button onClick={() => setStepsState(1)} variant="contained">
-              Próximo
-            </Button>
-          ) : (
-            <Button variant="contained">Criar</Button>
-          )}
-        </Stack>
-      </Box>
+      <ToastContainer />
     </Container>
   );
 };
 
-export default Curso;
+export default Page;

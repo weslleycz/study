@@ -17,7 +17,7 @@ export async function middleware(req: NextRequest, res: NextApiResponse) {
   const token = req.cookies.get("token") as unknown as any;
   if (token) {
     const role = decodeToken(token.value) as any;
-
+    console.log(role?.permissions);
     if (req.nextUrl.pathname === "/dashboard") {
       if (role?.permissions === "Teacher") {
         return NextResponse.next();

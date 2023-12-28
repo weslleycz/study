@@ -19,7 +19,7 @@ import { socket } from "../services/socket";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { theme } from "../theme";
 
-const Chat = () => {
+const Page = () => {
   const [chats, setChats] = useState([]);
   const [messages, setMessages] = useState<any[]>([]);
   const [message, setMessage] = useState("");
@@ -226,4 +226,4 @@ const Chat = () => {
   );
 };
 
-export default Chat;
+export default Page;

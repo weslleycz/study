@@ -3,7 +3,7 @@ import { useState } from "react";
 import { Login } from "../components/Login";
 import { Register } from "../components/Register";
 
-const Auth = () => {
+const Page = () => {
   const [isLogin, setIsLogin] = useState(true);
   return (
     <>
@@ -16,4 +16,4 @@ const Auth = () => {
   );
 };
 
-export default Auth;
+export default Page;

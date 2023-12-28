@@ -4,6 +4,8 @@ import * as dotenv from 'dotenv';
 import { AppModule } from './app.module';
 import { Server } from 'socket.io';
 import { json } from 'body-parser';
+import { join } from 'path';
+import { NestExpressApplication } from '@nestjs/platform-express';
 
 class SocketIoAdapter extends IoAdapter {
   private readonly server: Server;
@@ -26,8 +28,8 @@ class SocketIoAdapter extends IoAdapter {
 }
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule, {
-    // bodyParser: true,
+  const app = await NestFactory.create<NestExpressApplication>(AppModule, {
+    bodyParser: true,
   });
 
   dotenv.config();
@@ -44,13 +46,16 @@ async function bootstrap() {
 
   app.useWebSocketAdapter(new SocketIoAdapter(app));
 
-  app.use(json({ limit: '100mb' }));
+  app.use(json({ limit: '10000mb' }));
 
   app.setGlobalPrefix('api');
 
   app.use((req, res, next) => {
     next();
   });
+
+  app.setBaseViewsDir(join(process.cwd(), 'src/views'));
+  app.setViewEngine('hbs');
 
   await app.listen(process.env.PORT);
 

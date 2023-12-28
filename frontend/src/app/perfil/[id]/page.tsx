@@ -13,7 +13,7 @@ const MensagemBtn = dynamic(() => import("../../components/MensagemBtn"), {
   ssr: false,
 });
 
-const Perfil = () => {
+const Page = () => {
   const params = useParams();
   const router = useRouter();
   const [name, setName] = useState("");
@@ -62,7 +62,6 @@ const Perfil = () => {
         idDestinatario: params?.id,
         idRender: getCookie("id") as string,
       });
-      console.log(res.data);
       router.push("/chat");
     } catch (error) {
       console.log(error);
@@ -135,4 +134,4 @@ const Perfil = () => {
   );
 };
 
-export default Perfil;
+export default Page;

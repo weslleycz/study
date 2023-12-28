@@ -15,6 +15,9 @@ import { NotificationsService } from './controllers/notifications/notifications.
 import { ChatController } from './controllers/chat/chat.controller';
 import { ChatService } from './controllers/chat/chat.service';
 import { ChatGateway } from './gateways/chat.gateway';
+import { CourseController } from './controllers/course/course.controller';
+import { CourseService } from './controllers/course/course.service';
+import { RoleInterceptor } from './middlewares/roles.middleware';
 
 @Module({
   imports: [],
@@ -23,8 +26,10 @@ import { ChatGateway } from './gateways/chat.gateway';
     UserController,
     NotificationsController,
     ChatController,
+    CourseController,
   ],
   providers: [
+    { provide: 'String', useValue: '' },
     AppService,
     PrismaService,
     NextcloudService,
@@ -35,6 +40,8 @@ import { ChatGateway } from './gateways/chat.gateway';
     ChatService,
     NotificationsService,
     ChatGateway,
+    CourseService,
+    RoleInterceptor,
     {
       provide: APP_FILTER,
       useClass: HttpExceptionFilter,

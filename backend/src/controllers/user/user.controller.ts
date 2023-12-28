@@ -14,9 +14,6 @@ import { UserService } from './user.service';
 import { Roles } from '@prisma/client';
 import { Response } from 'express';
 import { JWTService } from 'src/services/jwt.service';
-import { create, Whatsapp } from 'venom-bot';
-
-
 
 @Controller('users')
 @UseFilters(HttpExceptionFilter)
@@ -64,10 +61,5 @@ export class UserController {
     }
     const file = Buffer.from(data?.data, 'base64');
     return await this.userService.upload(file, id);
-  }
-
-  @Get()
-  async teste() {
-
   }
 }

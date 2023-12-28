@@ -14,7 +14,7 @@ import {
   TableContainer,
   TableHead,
   TableRow,
-  Typography
+  Typography,
 } from "@mui/material";
 import {
   CategoryScale,
@@ -32,55 +32,30 @@ import { Line } from "react-chartjs-2";
 import { CommentsDashboard } from "../components/CommentsDashboard";
 import { theme } from "../theme";
 import Link from "next/link";
+import { useEffect, useState } from "react";
+import { api } from "../services/api";
+import { getCookie } from "cookies-next";
+import { useRouter } from "next/navigation";
+import Brightness1Icon from "@mui/icons-material/Brightness1";
+import { Graphic } from "../components/Graphic";
 
-ChartJS.register(
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  Title,
-  Tooltip,
-  Legend
-);
 
-const options = {
-  responsive: true,
-  plugins: {
-    legend: {
-      position: "top" as const,
-    },
-    title: {
-      display: true,
-      text: "Vendas nos últimos 6 meses.",
-    },
-  },
-};
 
-const labels = Array.from({ length: 6 }, (_, index) => {
-  const date = addMonths(new Date(), -index);
-  return format(date, "MMMM", { locale: ptBR });
-}).reverse();
+const Page = () => {
+  const [cursos, setCursos] = useState([]);
+  const router = useRouter();
 
-const data = {
-  labels,
-  datasets: [
-    {
-      label: "Dataset 1",
-      data: labels.map(() => faker.datatype.number({ min: -1000, max: 1000 })),
-      borderColor: theme.palette.info.main,
-      backgroundColor: theme.palette.primary.main,
-      fill: true,
-    },
-  ],
-};
+  useEffect(() => {
+    (async () => {
+      const res = await api.get(`/course/byId/teacher/${getCookie("id")}`, {
+        headers: {
+          token: getCookie("token"),
+        },
+      });
+      setCursos(res.data);
+    })();
+  }, []);
 
-const Dashboard = () => {
-  const cursos = [
-    { nome: "HTML/CSS", duracao: "4 semanas", students: 20 },
-    { nome: "HTML/CSS", duracao: "4 semanas", students: 20 },
-    { nome: "HTML/CSS", duracao: "4 semanas", students: 20 },
-    { nome: "HTML/CSS", duracao: "4 semanas", students: 20 },
-  ];
   return (
     <>
       <Container>
@@ -100,7 +75,7 @@ const Dashboard = () => {
                     Cursos
                   </Typography>
                   <Link href={"/dashboard/curso"}>
-                  <Button variant="contained">Criar curso</Button>
+                    <Button variant="contained">Criar curso</Button>
                   </Link>
                 </Box>
                 <Paper elevation={24}>
@@ -109,37 +84,60 @@ const Dashboard = () => {
                       <TableHead>
                         <TableRow>
                           <TableCell></TableCell>
-                          <TableCell>Duração</TableCell>
+                          <TableCell>Nome</TableCell>
+                          <TableCell>Aulas</TableCell>
                           <TableCell>Alunos</TableCell>
                         </TableRow>
                       </TableHead>
                       <TableBody>
                         {cursos.map((curso, index) => (
-                          <TableRow key={index}>
-                            <TableCell
+                          <>
+                            <TableRow
+                              onClick={() =>
+                                router.push(
+                                  `/dashboard/curso/${curso.id}`
+                                )
+                              }
                               sx={{
-                                color: theme.palette.primary.main,
-                                fontWeight: 800,
+                                cursor: "pointer",
+                                transition: "background-color 0.3s ease",
+                                ":hover": {
+                                  backgroundColor: "CaptionText",
+                                },
                               }}
+                              key={index}
                             >
-                              {curso.nome}
-                            </TableCell>
-                            <TableCell>{curso.duracao}</TableCell>
-                            <TableCell
-                              sx={{ color: theme.palette.primary.main }}
-                            >
-                              <Chip color="info" label={curso.students} />
-                            </TableCell>
-                          </TableRow>
+                              <TableCell>
+                                <Brightness1Icon
+                                  sx={{ color: curso.primary }}
+                                />
+                              </TableCell>
+                              <TableCell
+                                sx={{
+                                  color: theme.palette.primary.main,
+                                  fontWeight: 800,
+                                }}
+                              >
+                                {curso.name}
+                              </TableCell>
+                              <TableCell>{curso.lessons.length}</TableCell>
+                              <TableCell
+                                sx={{ color: theme.palette.primary.main }}
+                              >
+                                <Chip
+                                  color="info"
+                                  label={curso.Enrollment.length}
+                                />
+                              </TableCell>
+                            </TableRow>
+                          </>
                         ))}
                       </TableBody>
                     </Table>
                   </TableContainer>
                 </Paper>
               </Box>
-              <Paper sx={{p:2}} elevation={24}>
-                <Line options={options} data={data} />
-              </Paper>
+              <Graphic />
             </Grid>
             <Grid item xs={4}>
               <CommentsDashboard />
@@ -151,4 +149,4 @@ const Dashboard = () => {
   );
 };
 
-export default Dashboard;
+export default Page;
